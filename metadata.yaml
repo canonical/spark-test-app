@@ -1,0 +1,30 @@
+# Copyright 2024 Canonical Ltd.
+# See LICENSE file for licensing details.
+
+# For a complete list of supported options, see:
+# https://juju.is/docs/sdk/metadata-reference
+
+name: spark-test-app
+description: |
+  Simple charm to simulate Spark clients app
+summary: |
+  This charms allow you to deploy a simple Spark app to be integrated with an existing Kafka cluster
+
+containers:
+  spark:
+    resource: spark-image
+
+resources:
+  spark-image:
+    type: oci-image
+    description: OCI image for spark
+    upstream-source: ghcr.io/canonical/charmed-spark@sha256:90a1f26a33d7524b00b5b0692f03ed96919ea89ded571943d2b5aa7802389f87
+
+requires:
+  kafka:
+    interface: kafka_client
+  metastore:
+    interface: postgresql_client
+  spark-service-account:
+    interface: spark_service_account
+    limit: 1
