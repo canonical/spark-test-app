@@ -115,6 +115,7 @@ class CharmConfig(BaseModel):
     service_account: str
     namespace: str
     auto_start: bool
+    metastore_name: str
 
 class AppType(BaseEnumStr):
     """Class for the app type."""

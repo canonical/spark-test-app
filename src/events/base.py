@@ -12,7 +12,7 @@ from ops import CharmBase, EventBase, Object, StatusBase
 from core.context import Context
 from core.domain import SparkServiceAccountInfo, DeployMode, Flavour
 from common.logging import WithLogging
-from common.workload import AbstractWorkload
+from core.workload import KafkaAppWorkloadBase
 
 from managers.k8s import K8sManager
 from events import Status
@@ -20,7 +20,7 @@ from events import Status
 class BaseEventHandler(Object, WithLogging):
     """Base class for all Event Handler classes in the Spark Integration Hub."""
 
-    workload: AbstractWorkload
+    workload: KafkaAppWorkloadBase
     charm: CharmBase
     context: Context
 
@@ -40,13 +40,24 @@ class BaseEventHandler(Object, WithLogging):
         if not k8s_manager.has_cluster_permissions():
             return Status.INSUFFICIENT_CLUSTER_PERMISSIONS.value
 
+        # If the flavour Kafka is enabled, Kafka relation needs to exists
         if (
             self.context.config.flavour == Flavour.KAFKA.value and
             not self.context.kafka
         ):
             return Status.MISSING_KAFKA.value
 
+        # If metastore is enabled, so need to be the object storage
+        if (
+            self.context.metastore and
+                not k8s_manager.is_s3_configured() and
+                not k8s_manager.is_azure_storage_configured()
+        ):
+            return Status.MISSING_OBJECT_STORAGE_BACKEND.value
+
         # Check whether any one of object storage backend has been configured
+        # when the deploy mode is "cluster", since the scripts need to be uploaded
+        # to the object storage backend.
         # Currently, we do this check on the basis of presence of Spark properties
         # TODO: Rethink on this approach with a more sturdy solution
         if (

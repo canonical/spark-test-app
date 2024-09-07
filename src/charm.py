@@ -17,6 +17,7 @@ from core.domain import CharmConfig
 from events.integration_hub import SparkIntegrationHubEvents
 from events.spark_app import SparkAppEvents
 from events.kafka import KafkaEvents
+from events.metastore import MetastoreEvents
 from workload import SparkBase
 
 logger = logging.getLogger(__name__)
@@ -41,9 +42,9 @@ class SparkAppCharm(TypedCharmBase[CharmConfig]):
             self, self.context, self.workload
         )
 
-        self.kafka = KafkaEvents(
-            self, self.context, self.workload
-        )
+        self.kafka = KafkaEvents(self, self.context, self.workload)
+
+        self.metastore = MetastoreEvents(self, self.context, self.workload)
 
 
 

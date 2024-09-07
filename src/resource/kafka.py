@@ -45,11 +45,17 @@ count = (
 )
 
 if table_name:
-    (count.writeStream
-        .option("checkpointLocation", f"s3a://spark/checkpoints/{random_id}")
+    confs = dict(spark.sparkContext.getConf().getAll())
+    s3_bucket = confs["spark.kubernetes.file.upload.path"]
+
+    print(f"Using bucket: {s3_bucket}")
+
+    query = (count.writeStream
+        .option("checkpointLocation", f"{s3_bucket}/checkpoints/{random_id}")
         .format("parquet")
         .outputMode("append")
         .toTable(table_name))
 else:
     query = count.writeStream.outputMode("complete").format("console").start()
-    query.awaitTermination()
+
+query.awaitTermination()

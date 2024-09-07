@@ -10,7 +10,7 @@ from charms.data_platform_libs.v0.data_interfaces import (
 from ops import CharmBase, RelationEvent, RelationBrokenEvent
 
 from core.context import Context
-from common.workload import AbstractWorkload
+from core.workload import KafkaAppWorkloadBase
 from events.base import BaseEventHandler, compute_status, defer_when_not_ready
 from common.logging import WithLogging
 
@@ -19,14 +19,12 @@ from managers.kafka_app import KafkaApp
 class KafkaEvents(BaseEventHandler, WithLogging):
     """Class implementing Kafka event hooks."""
 
-    def __init__(self, charm: CharmBase, context: Context, workload: AbstractWorkload):
+    def __init__(self, charm: CharmBase, context: Context, workload: KafkaAppWorkloadBase):
         super().__init__(charm, "metastore")
 
         self.charm = charm
         self.context = context
         self.workload = workload
-
-        self.kafka_app = KafkaApp(context)
 
         self.kafka_provider = KafkaRequirerEventHandlers(
             self.charm, self.context.kafka_requirer

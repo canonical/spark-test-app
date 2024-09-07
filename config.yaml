@@ -18,6 +18,10 @@ options:
     default: "test-topic"
     description: Name of the topic to be used.
     type: string
+  metastore-name:
+    default: "hivemetastore"
+    description: Name of the PostgreSQL database where to store the Hive Metadata.
+    type: string
   namespace:
     type: string
     description: The namespace to be used by driver to create executor pods.

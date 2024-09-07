@@ -8,7 +8,7 @@ import os
 from ops import CharmBase, ActionEvent, PebbleReadyEvent
 
 from common.logging import WithLogging
-from common.workload import AbstractWorkload
+from core.workload import KafkaAppWorkloadBase
 from core.context import Context
 from core.domain import Flavour
 from events.base import BaseEventHandler, compute_status
@@ -21,14 +21,14 @@ from pathlib import Path
 class SparkAppEvents(BaseEventHandler, WithLogging):
 
     def __init__(self, charm: CharmBase, context: Context,
-                 workload: AbstractWorkload):
+                 workload: KafkaAppWorkloadBase):
         super().__init__(charm, "spark-app")
 
         self.charm = charm
         self.context = context
         self.workload = workload
 
-        self.kafka_app = KafkaApp(context)
+        self.kafka_app = KafkaApp(context, workload)
 
         self.framework.observe(
             self.charm.on.spark_pebble_ready,
@@ -51,7 +51,7 @@ class SparkAppEvents(BaseEventHandler, WithLogging):
         self.logger.info(f"Copying files {source}")
 
         source_path = Path(os.path.dirname(os.path.realpath(__file__))) / ".." / "resource"
-        target_path = Path("/") / "var" / "lib" / "spark"
+        target_path = self.workload.paths.bin_path
 
         src = source_path / source
         dst = target_path / source
@@ -79,7 +79,7 @@ class SparkAppEvents(BaseEventHandler, WithLogging):
 
         self.workload.set_environment({
             "EXTRA_ARGS": self.kafka_app.extra_args,
-            "SCRIPT": f"{self.context.config.flavour.value}.py"
+            "SCRIPT": f"{self.workload.paths.bin_path}/{self.context.config.flavour.value}.py"
         })
 
     def _start_process_action(self, _: ActionEvent):
@@ -94,7 +94,7 @@ class SparkAppEvents(BaseEventHandler, WithLogging):
         self.logger.info(f"Resetting configs")
         self.workload.set_environment({
             "EXTRA_ARGS": self.kafka_app.extra_args,
-            "SCRIPT": f"{self.context.config.flavour.value}.py"
+            "SCRIPT": f"{self.workload.paths.bin_path}/{self.context.config.flavour.value}.py"
         })
 
     @compute_status

@@ -15,7 +15,7 @@ from constants import (
     SPARK_SERVICE_ACCOUNT
 )
 from core.context import Context
-from common.workload import AbstractWorkload
+from core.workload import KafkaAppWorkloadBase
 from events.base import BaseEventHandler, compute_status, defer_when_not_ready
 from common.logging import WithLogging
 
@@ -23,7 +23,7 @@ from common.logging import WithLogging
 class SparkIntegrationHubEvents(BaseEventHandler, WithLogging):
     """Class implementing Integration Hub event hooks."""
 
-    def __init__(self, charm: CharmBase, context: Context, workload: AbstractWorkload):
+    def __init__(self, charm: CharmBase, context: Context, workload: KafkaAppWorkloadBase):
         super().__init__(charm, "integration-hub")
 
         self.charm = charm

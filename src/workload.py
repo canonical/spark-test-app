@@ -11,10 +11,11 @@ from ops.model import Container
 from common.k8s import K8sWorkload
 from common.utils import WithLogging
 from core.domain import User
+from core.workload import KafkaAppWorkloadBase, KafkaAppPaths
 
 user = User(name="_daemon_", group="_daemon_")
 
-class SparkBase(K8sWorkload, WithLogging):
+class SparkBase(K8sWorkload, KafkaAppWorkloadBase, WithLogging):
     """Class representing Workload implementation for History Server on K8s."""
 
     CONTAINER = "spark"
@@ -22,8 +23,11 @@ class SparkBase(K8sWorkload, WithLogging):
 
     SERVICE = "spark-job"
 
-    CONFS_PATH = "/etc/spark/conf"
-    ENV_FILE = "/etc/spark/environment"
+    paths = KafkaAppPaths(
+        bin_path="/var/lib/spark/app", conf_path="/etc/spark8t/conf"
+    )
+
+    ENV_FILE = paths.env_file
 
     def __init__(self, container: Container, user: User = user):
         K8sWorkload.__init__(self)
@@ -42,7 +46,7 @@ class SparkBase(K8sWorkload, WithLogging):
                     "override": "replace",
                     "summary": "Spark Job Command",
                     "startup": "disabled",
-                    "command": f"/bin/bash /var/lib/spark/app.sh",
+                    "command": f"/bin/bash {self.paths.bin_path}/app.sh",
                     "environment": self.envs,
                     "on-success": "ignore",
                     "on-failure": "ignore"
