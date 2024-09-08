@@ -18,7 +18,7 @@ from core.context import Context
 from core.workload import KafkaAppWorkloadBase
 from events.base import BaseEventHandler, compute_status, defer_when_not_ready
 from common.logging import WithLogging
-
+from common.k8s import K8sUtils
 
 class SparkIntegrationHubEvents(BaseEventHandler, WithLogging):
     """Class implementing Integration Hub event hooks."""
@@ -34,7 +34,7 @@ class SparkIntegrationHubEvents(BaseEventHandler, WithLogging):
             self.charm,
             SPARK_SERVICE_ACCOUNT,
             self.context.config.service_account,
-            self.context.config.namespace,
+            K8sUtils().default_namespace,
         )
 
         self.framework.observe(self.requirer.on.account_granted, self._on_account_granted)

@@ -9,12 +9,13 @@ from typing import Callable
 
 from ops import CharmBase, EventBase, Object, StatusBase
 
+from common.k8s import K8sUtils
 from core.context import Context
 from core.domain import SparkServiceAccountInfo, DeployMode, Flavour
 from common.logging import WithLogging
 from core.workload import KafkaAppWorkloadBase
 
-from managers.k8s import K8sManager
+from managers.k8s import SparkServiceAccountManager
 from events import Status
 
 class BaseEventHandler(Object, WithLogging):
@@ -35,9 +36,17 @@ class BaseEventHandler(Object, WithLogging):
         if not service_account:
             return Status.MISSING_INTEGRATION_HUB.value
 
-        k8s_manager = K8sManager(service_account_info=service_account, workload=self.workload)
+        k8s = K8sUtils()
 
-        if not k8s_manager.has_cluster_permissions():
+        if not k8s.is_namespace_valid(service_account.namespace):
+            return Status.INVALID_NAMESPACE.value
+
+        if not k8s.is_service_account_valid(service_account.service_account, service_account.namespace):
+            return Status.INVALID_SERVICE_ACCOUNT.value
+
+        service_account_manager = SparkServiceAccountManager(spark_service_account=service_account)
+
+        if not service_account_manager.has_cluster_permissions():
             return Status.INSUFFICIENT_CLUSTER_PERMISSIONS.value
 
         # If the flavour Kafka is enabled, Kafka relation needs to exists
@@ -50,8 +59,8 @@ class BaseEventHandler(Object, WithLogging):
         # If metastore is enabled, so need to be the object storage
         if (
             self.context.metastore and
-                not k8s_manager.is_s3_configured() and
-                not k8s_manager.is_azure_storage_configured()
+                not service_account_manager.is_s3_configured() and
+                not service_account_manager.is_azure_storage_configured()
         ):
             return Status.MISSING_OBJECT_STORAGE_BACKEND.value
 
@@ -62,16 +71,10 @@ class BaseEventHandler(Object, WithLogging):
         # TODO: Rethink on this approach with a more sturdy solution
         if (
             self.context.config.deploy_mode == DeployMode.CLUSTER.value and
-                not k8s_manager.is_s3_configured() and
-                not k8s_manager.is_azure_storage_configured()
+                not service_account_manager.is_s3_configured() and
+                not service_account_manager.is_azure_storage_configured()
         ):
             return Status.MISSING_OBJECT_STORAGE_BACKEND.value
-
-        if not k8s_manager.is_namespace_valid():
-            return Status.INVALID_NAMESPACE.value
-
-        if not k8s_manager.is_service_account_valid():
-            return Status.INVALID_SERVICE_ACCOUNT.value
 
         return Status.ACTIVE.value
 

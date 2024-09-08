@@ -11,12 +11,15 @@ from ops import Container
 from ops.pebble import ExecError
 from typing_extensions import override
 
+from lightkube import Client, KubeConfig
+from lightkube.core.exceptions import ApiError
+from lightkube.resources.core_v1 import Namespace, ServiceAccount
+
+from common.logging import WithLogging
 from common.workload import AbstractWorkload
 
-logger = logging.getLogger(__name__)
 
-
-class K8sWorkload(AbstractWorkload, ABC):
+class K8sWorkload(AbstractWorkload, WithLogging, ABC):
     """Class for providing implementation for IO operations on K8s."""
 
     container: Container
@@ -79,7 +82,7 @@ class K8sWorkload(AbstractWorkload, ABC):
             output, _ = process.wait_output()
             return output
         except ExecError as e:
-            logger.error(str(e.stderr))
+            self.logger.error(str(e.stderr))
             raise e
 
     @override
@@ -105,4 +108,50 @@ class K8sWorkload(AbstractWorkload, ABC):
         self._envs = {k: v for k, v in merged_envs.items() if v is not None}
 
         self.write("\n".join(self.to_env(self.envs)), self.ENV_FILE)
+
+
+
+class K8sUtils(WithLogging):
+    """Class that encapsulates various utilities related to K8s."""
+
+    def __init__(
+        self, kube_config: None | str | dict = None
+    ):
+        self.kube_config = kube_config
+        self.client = Client(config=K8sUtils._parsed_kube_config(kube_config))
+
+    @staticmethod
+    def _parsed_kube_config(kube_config: None | str | dict) -> KubeConfig:
+        """Return the kube config file parsed as a dictionary"""
+        if not kube_config:
+            return KubeConfig.from_env()
+
+        if isinstance(kube_config, str):
+            return KubeConfig.from_file(kube_config)
+        elif isinstance(kube_config, dict):
+            return KubeConfig.from_dict(kube_config)
+        else:
+            raise ValueError(
+                f"malformed kube_config: type {type(kube_config)}"
+            )
+
+    @property
+    def default_namespace(self):
+        return self.client.namespace
+
+    def is_namespace_valid(self, namespace: str):
+        """Return whether given namespace exists in K8s cluster."""
+        try:
+            self.client.get(Namespace, name=namespace)
+        except ApiError:
+            return False
+        return True
+
+    def is_service_account_valid(self, service_account: str, namespace: None | str):
+        """Return whether given service account in the given namespace exists in K8s cluster."""
+        try:
+            self.client.get(ServiceAccount, name=service_account, namespace=namespace or self.default_namespace)
+        except ApiError:
+            return False
+        return True
 

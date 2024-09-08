@@ -6,7 +6,7 @@ from typing import List
 from core.domain import Flavour
 from core.workload import KafkaAppWorkloadBase
 
-from managers.k8s import K8sManager
+from managers.k8s import SparkServiceAccountManager
 
 class KafkaApp:
 
@@ -15,7 +15,7 @@ class KafkaApp:
     ):
         self.context = context
 
-        self.k8s_manager = K8sManager(context.service_account, workload) if context.service_account else None
+        self.service_account_manager = SparkServiceAccountManager(context.service_account) if context.service_account else None
 
     @property
     def deploy_mode(self) -> str:
@@ -24,7 +24,14 @@ class KafkaApp:
     @property
     def confs(self) -> dict[str, str]:
 
-        if self.context.metastore and self.k8s_manager and (properties := self.k8s_manager.get_properties().props):
+        if (
+                self.context.metastore and
+                self.service_account_manager and
+                self.service_account_manager.has_cluster_permissions() and
+                self.service_account_manager.exists()
+        ):
+            properties = self.service_account_manager.spark8t_account.configurations.props
+
             warehouse_dir = {
                 "spark.sql.warehouse.dir": properties["spark.kubernetes.file.upload.path"]
             }
