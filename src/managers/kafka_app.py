@@ -9,7 +9,6 @@ from core.workload import KafkaAppWorkloadBase
 from managers.k8s import K8sManager
 
 class KafkaApp:
-    KAFKA_IMAGE = "ghcr.io/canonical/charmed-spark:3.4.2-22.04_edge"
 
     def __init__(
         self, context: Context, workload: KafkaAppWorkloadBase
@@ -33,7 +32,8 @@ class KafkaApp:
             warehouse_dir = {}
 
         return {
-            "spark.kubernetes.container.image": self.KAFKA_IMAGE,
+            "spark.kubernetes.container.image": self.context.config.spark_image,
+            "spark.sql.shuffle.partitions": self.context.config.partitions,
             "spark.jars.ivy": "/tmp",
         } | warehouse_dir
 

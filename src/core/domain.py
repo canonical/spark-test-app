@@ -116,6 +116,8 @@ class CharmConfig(BaseModel):
     namespace: str
     auto_start: bool
     metastore_name: str
+    spark_image: str
+    partitions: int
 
 class AppType(BaseEnumStr):
     """Class for the app type."""

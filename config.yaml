@@ -26,6 +26,14 @@ options:
     type: string
     description: The namespace to be used by driver to create executor pods.
     default: 'spark'
+  spark-image:
+    type: string
+    description: Image to be used when running Spark jobs.
+    default: 'ghcr.io/canonical/charmed-spark:3.4.2-22.04_edge'
+  partitions:
+    type: int
+    description: Spark Job partitions.
+    default: 10
   service-account:
     type: string
     description: The service account to be used by driver to create executor pods.

@@ -7,7 +7,7 @@ import uuid
 random_id=uuid.uuid4()
 
 # Create a Spark Session
-spark = SparkSession.builder.appName("SparkStreaming").getOrCreate()
+spark = SparkSession.builder.appName("SparkStreaming").enableHiveSupport().getOrCreate()
 
 # Input
 username=os.environ.get("KAFKA_USERNAME", "")
