@@ -1,0 +1,59 @@
+# Copyright 2023 Canonical Ltd.
+# See LICENSE file for licensing details.
+name: Tests
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+on:
+  pull_request:
+  schedule:
+    - cron: '53 0 * * *' # Daily at 00:53 UTC
+  # Triggered on push to branch "main" by .github/workflows/release.yaml
+  workflow_call:
+
+jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Install tox
+        # TODO: Consider replacing with custom image on self-hosted runner OR pinning version
+        run: python3 -m pip install tox
+      - name: Run linters
+        run: tox run -e lint
+
+  unit-test:
+    name: Unit tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Install tox
+        # TODO: Consider replacing with custom image on self-hosted runner OR pinning version
+        run: python3 -m pip install tox
+      - name: Run tests
+        run: tox run -e unit
+
+  integration-charm:
+    name: Integration tests for (lxd)
+    runs-on: ubuntu-latest
+    timeout-minutes: 200
+    needs:
+      - lint
+      - unit-test
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Setup operator environment
+        uses: charmed-kubernetes/actions-operator@main
+        with:
+          provider: lxd
+          bootstrap-options: "--agent-version 2.9.38"
+      - name: Run integration tests
+        run: tox -e integration
