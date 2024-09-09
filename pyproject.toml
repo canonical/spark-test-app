@@ -25,8 +25,12 @@ profile = "black"
 [tool.poetry]
 name = "spark-app"
 version = "1.0"
-description = "Simple Spark app to be used for testing"
-authors = ["Enrico Deusebio <enrico.deusebio@canonical.com>"]
+description = "Simple charm to simulate Spark clients applications."
+authors = [
+    "Canonical Data Platform <data-platform@lists.launchpad.net>"
+]
+license = "Apache-2.0"
+readme = "README.md"
 
 [tool.poetry.dependencies]
 python = ">=3.8"
