@@ -66,7 +66,10 @@ class K8sManager(WithLogging):
         with umask_named_temporary_file(
                 mode="w", prefix="spark-conf-", suffix=".conf"
         ) as t:
-            result = self.workload.exec(command)
+            try:
+                result = self.workload.exec(command)
+            except Exception:
+                result = ""
 
             t.write(result)
 
