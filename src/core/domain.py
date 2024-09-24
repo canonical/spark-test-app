@@ -5,16 +5,13 @@
 
 """Definition of various model classes."""
 
-import json
-from dataclasses import dataclass
-from typing import List, MutableMapping
 from enum import Enum
-
-from pydantic import BaseModel, validator, ValidationError
-from typing import Optional
-from ops import Application, Relation, Unit
+from typing import List, MutableMapping, Optional
 
 from charms.data_platform_libs.v0.data_interfaces import Data
+from ops import Application, Relation, Unit
+from pydantic import BaseModel, ValidationError, validator
+
 from common.relation.domain import RelationState
 
 
@@ -24,8 +21,7 @@ from common.relation.domain import RelationState
 class StateBase:
     """Base state object."""
 
-    def __init__(self, relation: Relation | None,
-                 component: Unit | Application):
+    def __init__(self, relation: Relation | None, component: Unit | Application):
         self.relation = relation
         self.component = component
 
@@ -55,10 +51,10 @@ class SparkServiceAccountInfo(RelationState):
     """Requirer-side of the Integration Hub relation."""
 
     def __init__(
-            self,
-            relation: Relation | None,
-            data_interface: Data,
-            component: Application,
+        self,
+        relation: Relation | None,
+        data_interface: Data,
+        component: Application,
     ):
         super().__init__(relation, data_interface, component)
         self.data_interface = data_interface
@@ -93,6 +89,7 @@ class DeployMode(BaseEnumStr):
     CLIENT = "client"
     CLUSTER = "cluster"
 
+
 class Flavour(BaseEnumStr):
     """Class for the app type."""
 
@@ -102,6 +99,7 @@ class Flavour(BaseEnumStr):
 
 class User(BaseModel):
     """Class representing the user running the Pebble workload services."""
+
     name: str
     group: str
 
@@ -119,11 +117,13 @@ class CharmConfig(BaseModel):
     spark_image: str
     partitions: int
 
+
 class AppType(BaseEnumStr):
     """Class for the app type."""
 
     PRODUCER = "producer"
     CONSUMER = "consumer"
+
 
 class KafkaRequirerRelationDataBag(BaseModel):
     """Class for Kafka relation data."""

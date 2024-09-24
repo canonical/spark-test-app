@@ -87,7 +87,6 @@ class K8sWorkload(AbstractWorkload, ABC):
         """Check whether the service is ready to be used."""
         return self.container.can_connect()
 
-
     @property
     def envs(self):
         """Return current environment."""
@@ -105,4 +104,3 @@ class K8sWorkload(AbstractWorkload, ABC):
         self._envs = {k: v for k, v in merged_envs.items() if v is not None}
 
         self.write("\n".join(self.to_env(self.envs)), self.ENV_FILE)
-

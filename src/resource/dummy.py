@@ -1,4 +1,6 @@
-from pyspark import SparkContext, SparkConf
+"""Simple Spark dummy application to be used for testing."""
+
+from pyspark import SparkConf, SparkContext
 
 # Set up Spark configuration
 conf = SparkConf().setAppName("MyApp")

@@ -10,20 +10,19 @@ import re
 from lightkube import Client
 from lightkube.core.exceptions import ApiError
 from lightkube.resources.core_v1 import Namespace, ServiceAccount
-from spark8t.services import K8sServiceAccountRegistry, LightKube
 from spark8t.domain import PropertyFile
+from spark8t.services import K8sServiceAccountRegistry, LightKube
 from spark8t.utils import umask_named_temporary_file
 
-from core.domain import SparkServiceAccountInfo
 from common.logging import WithLogging
 from common.workload import AbstractWorkload
+from core.domain import SparkServiceAccountInfo
+
 
 class K8sManager(WithLogging):
     """Class that encapsulates various utilities related to K8s."""
 
-    def __init__(
-        self, service_account_info: SparkServiceAccountInfo, workload: AbstractWorkload
-    ):
+    def __init__(self, service_account_info: SparkServiceAccountInfo, workload: AbstractWorkload):
         self.namespace = service_account_info.namespace
         self.service_account = service_account_info.service_account
         self.workload = workload
@@ -63,9 +62,7 @@ class K8sManager(WithLogging):
             ]
         )
 
-        with umask_named_temporary_file(
-                mode="w", prefix="spark-conf-", suffix=".conf"
-        ) as t:
+        with umask_named_temporary_file(mode="w", prefix="spark-conf-", suffix=".conf") as t:
             try:
                 result = self.workload.exec(command)
             except Exception:

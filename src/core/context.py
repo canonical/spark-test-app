@@ -7,15 +7,19 @@
 from charms.data_platform_libs.v0.data_interfaces import DatabaseRequirerData, KafkaRequirerData
 from ops import Model, Relation
 
-from core.domain import CharmConfig
+from common.logging import WithLogging
 from common.relation.spark_sa import RequirerData
 from constants import (
-    POSTGRESQL_METASTORE,
     KAFKA_RELATION_NAME,
+    POSTGRESQL_METASTORE,
     SPARK_SERVICE_ACCOUNT,
 )
-from core.domain import PostgreSQLProviderRelationDataBag, SparkServiceAccountInfo, KafkaProviderRelationDataBag
-from common.logging import WithLogging
+from core.domain import (
+    CharmConfig,
+    KafkaProviderRelationDataBag,
+    PostgreSQLProviderRelationDataBag,
+    SparkServiceAccountInfo,
+)
 
 
 class Context(WithLogging):
@@ -28,12 +32,12 @@ class Context(WithLogging):
             self.model, POSTGRESQL_METASTORE, database_name=self.config.metastore_name
         )
         self.kafka_requirer = KafkaRequirerData(
-            self.model, relation_name=KAFKA_RELATION_NAME,
+            self.model,
+            relation_name=KAFKA_RELATION_NAME,
             topic=self.config.topic_name,
             extra_user_roles="admin",
             consumer_group_prefix="streaming-app",
         )
-
 
     @property
     def _spark_account_relation(self) -> Relation | None:
@@ -59,7 +63,6 @@ class Context(WithLogging):
                 continue
             return KafkaProviderRelationDataBag(**data)
         return None
-
 
     @property
     def service_account(self) -> SparkServiceAccountInfo | None:

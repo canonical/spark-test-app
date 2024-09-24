@@ -6,18 +6,16 @@
 
 from ops import CharmBase
 
+from common.logging import WithLogging
 from common.relation.spark_sa import (
     IntegrationHubRequirer,
     ServiceAccountGoneEvent,
     ServiceAccountGrantedEvent,
 )
-from constants import (
-    SPARK_SERVICE_ACCOUNT
-)
+from constants import SPARK_SERVICE_ACCOUNT
 from core.context import Context
 from core.workload import KafkaAppWorkloadBase
 from events.base import BaseEventHandler, compute_status, defer_when_not_ready
-from common.logging import WithLogging
 
 
 class SparkIntegrationHubEvents(BaseEventHandler, WithLogging):
@@ -45,16 +43,20 @@ class SparkIntegrationHubEvents(BaseEventHandler, WithLogging):
     def _on_account_granted(self, event: ServiceAccountGrantedEvent):
         """Handle the `ServiceAccountGrantedEvent` event from integration hub."""
         self.logger.info("Service account received")
-        self.workload.set_environment({
-            "SPARK_USER": event.service_account,
-            "SPARK_NAMESPACE": event.namespace,
-        })
+        self.workload.set_environment(
+            {
+                "SPARK_USER": event.service_account,
+                "SPARK_NAMESPACE": event.namespace,
+            }
+        )
 
     @compute_status
     def _on_account_gone(self, _: ServiceAccountGoneEvent):
         """Handle the `ServiceAccountGoneEvent` event from integration hub."""
         self.logger.info("Service account deleted")
-        self.workload.set_environment({
-            "SPARK_USER": None,
-            "SPARK_NAMESPACE": None,
-        })
+        self.workload.set_environment(
+            {
+                "SPARK_USER": None,
+                "SPARK_NAMESPACE": None,
+            }
+        )

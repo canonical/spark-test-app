@@ -11,9 +11,10 @@ from ops.model import Container
 from common.k8s import K8sWorkload
 from common.utils import WithLogging
 from core.domain import User
-from core.workload import KafkaAppWorkloadBase, KafkaAppPaths
+from core.workload import KafkaAppPaths, KafkaAppWorkloadBase
 
 user = User(name="_daemon_", group="_daemon_")
+
 
 class SparkBase(K8sWorkload, KafkaAppWorkloadBase, WithLogging):
     """Class representing Workload implementation for History Server on K8s."""
@@ -23,9 +24,7 @@ class SparkBase(K8sWorkload, KafkaAppWorkloadBase, WithLogging):
 
     SERVICE = "spark-job"
 
-    paths = KafkaAppPaths(
-        bin_path="/var/lib/spark/app", conf_path="/etc/spark8t/conf"
-    )
+    paths = KafkaAppPaths(bin_path="/var/lib/spark/app", conf_path="/etc/spark8t/conf")
 
     ENV_FILE = paths.env_file
 
@@ -49,7 +48,7 @@ class SparkBase(K8sWorkload, KafkaAppWorkloadBase, WithLogging):
                     "command": f"/bin/bash {self.paths.bin_path}/app.sh",
                     "environment": self.envs,
                     "on-success": "ignore",
-                    "on-failure": "ignore"
+                    "on-failure": "ignore",
                 }
             },
         }
@@ -58,7 +57,6 @@ class SparkBase(K8sWorkload, KafkaAppWorkloadBase, WithLogging):
 
     def start(self):
         """Execute business-logic for starting the workload."""
-
         self.container.add_layer(self.CONTAINER_LAYER, self._spark_layer, combine=True)
 
         # Push an updated layer with the new config

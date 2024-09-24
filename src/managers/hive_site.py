@@ -7,11 +7,11 @@
 
 from xml.etree import ElementTree
 
+from common.logging import WithLogging
 from constants import (
     METASTORE_DATABASE_NAME,
 )
 from core.domain import PostgreSQLProviderRelationDataBag
-from common.logging import WithLogging
 
 
 class HiveConfig(WithLogging):

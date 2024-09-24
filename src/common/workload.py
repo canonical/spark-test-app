@@ -65,7 +65,6 @@ class AbstractWorkload(ABC):
     def ready(self) -> bool:
         """Check that the container is ready to be used."""
 
-
     @staticmethod
     def from_env(content: list[str]) -> dict[str, str]:
         """Parse environment file content into a dict structure."""

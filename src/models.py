@@ -22,11 +22,12 @@ class DeployMode(BaseEnumStr):
     CLIENT = "client"
     CLUSTER = "cluster"
 
+
 class User(BaseModel):
     """Class representing the user running the Pebble workload services."""
+
     name: str
     group: str
-
 
 
 class CharmConfig(BaseModel):
@@ -35,11 +36,13 @@ class CharmConfig(BaseModel):
     topic_name: str
     deploy_mode: DeployMode
 
+
 class AppType(BaseEnumStr):
     """Class for the app type."""
 
     PRODUCER = "producer"
     CONSUMER = "consumer"
+
 
 class KafkaRequirerRelationDataBag(BaseModel):
     """Class for Kafka relation data."""

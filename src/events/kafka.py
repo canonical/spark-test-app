@@ -4,17 +4,14 @@
 
 """Metastore database related event handlers."""
 
-from charms.data_platform_libs.v0.data_interfaces import (
-    KafkaRequirerEventHandlers
-)
-from ops import CharmBase, RelationEvent, RelationBrokenEvent
+from charms.data_platform_libs.v0.data_interfaces import KafkaRequirerEventHandlers
+from ops import CharmBase, RelationBrokenEvent, RelationEvent
 
+from common.logging import WithLogging
 from core.context import Context
 from core.workload import KafkaAppWorkloadBase
 from events.base import BaseEventHandler, compute_status, defer_when_not_ready
-from common.logging import WithLogging
 
-from managers.kafka_app import KafkaApp
 
 class KafkaEvents(BaseEventHandler, WithLogging):
     """Class implementing Kafka event hooks."""
@@ -26,13 +23,9 @@ class KafkaEvents(BaseEventHandler, WithLogging):
         self.context = context
         self.workload = workload
 
-        self.kafka_provider = KafkaRequirerEventHandlers(
-            self.charm, self.context.kafka_requirer
-        )
+        self.kafka_provider = KafkaRequirerEventHandlers(self.charm, self.context.kafka_requirer)
 
-        self.framework.observe(
-            self.kafka_provider.on.topic_created, self._on_topic_created
-        )
+        self.framework.observe(self.kafka_provider.on.topic_created, self._on_topic_created)
         self.framework.observe(
             self.kafka_provider.on.bootstrap_server_changed, self._on_topic_created
         )
@@ -46,12 +39,14 @@ class KafkaEvents(BaseEventHandler, WithLogging):
         """Handle event when metastore database is created."""
         self.logger.info("Kafka connection created...")
 
-        self.workload.set_environment({
-            "KAFKA_USERNAME": self.context.kafka.username,
-            "KAFKA_PASSWORD": self.context.kafka.password,
-            "KAFKA_ENDPOINTS": self.context.kafka.endpoints,
-            "KAFKA_TOPIC": self.context.config.topic_name
-        })
+        self.workload.set_environment(
+            {
+                "KAFKA_USERNAME": self.context.kafka.username,
+                "KAFKA_PASSWORD": self.context.kafka.password,
+                "KAFKA_ENDPOINTS": self.context.kafka.endpoints,
+                "KAFKA_TOPIC": self.context.config.topic_name,
+            }
+        )
 
         if self.context.config.auto_start:
             self.logger.info("Auto-start enabled: starting job")
@@ -63,10 +58,11 @@ class KafkaEvents(BaseEventHandler, WithLogging):
         self.logger.info("Kafka relation removed")
         self.workload.stop()
 
-        self.workload.set_environment({
-            "KAFKA_USERNAME": None,
-            "KAFKA_PASSWORD": None,
-            "KAFKA_ENDPOINTS": None,
-            "KAFKA_TOPIC": None
-        })
-
+        self.workload.set_environment(
+            {
+                "KAFKA_USERNAME": None,
+                "KAFKA_PASSWORD": None,
+                "KAFKA_ENDPOINTS": None,
+                "KAFKA_TOPIC": None,
+            }
+        )

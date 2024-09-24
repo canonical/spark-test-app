@@ -1,5 +1,9 @@
+"""Module for the base functionalities of event handlers."""
+
 from enum import Enum
+
 from ops.model import ActiveStatus, BlockedStatus, MaintenanceStatus
+
 
 class Status(Enum):
     """Class bundling all statuses that the charm may fall into."""
