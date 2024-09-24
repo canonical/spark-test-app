@@ -138,7 +138,7 @@ class KafkaRequirerRelationDataBag(BaseModel):
         try:
             _app_type = [AppType(value) for value in roles.split(",")]
         except Exception as e:
-            raise ValidationError(f"could not properly parsed the roles configuration: {e}")
+            raise ValidationError(f"could not properly parse the roles configuration: {e}")
         return roles
 
     @property

@@ -54,7 +54,7 @@ juju add-model dev
 # Enable DEBUG logging
 juju model-config logging-config="<root>=INFO;unit=DEBUG"
 # Deploy the charm
-juju deploy ./kafka-test-app_ubuntu-22.04-amd64.charm 
+juju deploy ./spark-test-app_ubuntu-22.04-amd64.charm 
 ```
 
 ## Canonical Contributor Agreement

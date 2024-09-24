@@ -40,7 +40,7 @@ class SparkBase(K8sWorkload, KafkaAppWorkloadBase, WithLogging):
         """Return a dictionary representing a Pebble layer."""
         layer = {
             "summary": "spark history server layer",
-            "description": "pebble config layer for spark history server",
+            "description": "pebble config layer for running the App script",
             "services": {
                 self.SERVICE: {
                     "override": "replace",

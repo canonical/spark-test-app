@@ -11,7 +11,7 @@ from core.domain import CharmConfig
 from common.relation.spark_sa import RequirerData
 from constants import (
     POSTGRESQL_METASTORE,
-    KAFKA,
+    KAFKA_RELATION_NAME,
     SPARK_SERVICE_ACCOUNT,
 )
 from core.domain import PostgreSQLProviderRelationDataBag, SparkServiceAccountInfo, KafkaProviderRelationDataBag
@@ -28,7 +28,7 @@ class Context(WithLogging):
             self.model, POSTGRESQL_METASTORE, database_name=self.config.metastore_name
         )
         self.kafka_requirer = KafkaRequirerData(
-            self.model, relation_name=KAFKA,
+            self.model, relation_name=KAFKA_RELATION_NAME,
             topic=self.config.topic_name,
             extra_user_roles="admin",
             consumer_group_prefix="streaming-app",

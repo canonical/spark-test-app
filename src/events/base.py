@@ -47,7 +47,8 @@ class BaseEventHandler(Object, WithLogging):
         ):
             return Status.MISSING_KAFKA.value
 
-        # If metastore is enabled, so need to be the object storage
+        # If metastore is enabled, this means that the data will be saved into Hive tables.
+        # Therefore, we also require to have an object storage configured.
         if (
             self.context.metastore and
                 not k8s_manager.is_s3_configured() and

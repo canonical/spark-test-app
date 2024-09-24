@@ -99,11 +99,6 @@ class SparkAppEvents(BaseEventHandler, WithLogging):
 
     @compute_status
     def _on_update_status(self, event: UpdateStatusEvent):
-        if kafka := self.context.kafka:
-            self.logger.info(f"Kafka data present")
-            self.logger.info(f"=> Username: {kafka.username}")
-            self.logger.info(f"=> Password: {kafka.password}")
-            self.logger.info(f"=> Endpoints: {kafka.endpoints}")
-
+        pass
 
 

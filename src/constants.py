@@ -5,7 +5,7 @@
 """Collection of globals common to the KafkaAppCharm."""
 
 CONTAINER="spark"
-KAFKA = "kafka"
+KAFKA_RELATION_NAME = "kafka"
 
 METASTORE_DATABASE_NAME = "hivemetastore"
 POSTGRESQL_DEFAULT_DATABASE = "postgres"
