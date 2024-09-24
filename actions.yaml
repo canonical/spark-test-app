@@ -1,0 +1,8 @@
+# Copyright 2023 Canonical Ltd.
+# See LICENSE file for licensing details.
+
+start-process:
+  description: Start the Spark Streaming job.
+
+stop-process:
+  description: Stop the Spark Streaming job.

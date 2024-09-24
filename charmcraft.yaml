@@ -1,0 +1,23 @@
+# Copyright 2023 Canonical Ltd.
+# See LICENSE file for licensing details.
+
+type: charm
+parts:
+  charm:
+    charm-binary-python-packages:
+      - setuptools
+      - psycopg2-binary==2.9.9
+    build-packages:
+      - git
+      - build-essential
+      - python3-dev
+      - pkg-config
+      - cmake
+bases:
+  - build-on:
+      - name: "ubuntu"
+        channel: "22.04"
+    run-on:
+      - name: "ubuntu"
+        channel: "22.04"
+

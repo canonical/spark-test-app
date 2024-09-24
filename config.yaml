@@ -1,0 +1,40 @@
+# Copyright 2023 Canonical Ltd.
+# See LICENSE file for licensing details.
+
+options:
+  auto-start:
+    default: "false"
+    description: "Whether the process starts as soon as relations are created"
+    type: boolean
+  flavour:
+    default: "dummy"
+    description: "Which Job should be run. Possible values: dummy, kafka"
+    type: string
+  deploy-mode:
+    default: "client"
+    description: "How to run the Spark application. Possible values: client, cluster"
+    type: string
+  topic-name:
+    default: "test-topic"
+    description: Name of the topic to be used.
+    type: string
+  metastore-name:
+    default: "hivemetastore"
+    description: Name of the PostgreSQL database where to store the Hive Metadata.
+    type: string
+  namespace:
+    type: string
+    description: The namespace to be used by driver to create executor pods.
+    default: 'spark'
+  spark-image:
+    type: string
+    description: Image to be used when running Spark jobs.
+    default: 'ghcr.io/canonical/charmed-spark:3.4.2-22.04_edge'
+  partitions:
+    type: int
+    description: Spark Job partitions.
+    default: 10
+  service-account:
+    type: string
+    description: The service account to be used by driver to create executor pods.
+    default: 'spark-service-account-test-app'
