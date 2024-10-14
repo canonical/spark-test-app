@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-# Copyright 2024 Canonical Limited
+#
+# Copyright 2024 Canonical Ltd.
 # See LICENSE file for licensing details.
 
 """Integration Hub related event handlers."""
@@ -58,8 +59,7 @@ class SparkAppEvents(BaseEventHandler, WithLogging):
 
     @compute_status
     def _on_spark_pebble_ready(self, event: PebbleReadyEvent) -> None:
-        """Handle the bootstrap server changed."""
-        # Event triggered when a bootstrap server was changed for this application
+        """Handle the Pebble ready event."""
 
         for flavour in Flavour:
             source = f"{flavour}.py"

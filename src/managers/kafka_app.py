@@ -1,3 +1,8 @@
+#!/usr/bin/env python3
+#
+# Copyright 2024 Canonical Ltd.
+# See LICENSE file for licensing details.
+
 """Module for the manager functionality of Kafka client applications."""
 
 from typing import List

@@ -1,3 +1,8 @@
+#!/usr/bin/env python3
+#
+# Copyright 2024 Canonical Ltd.
+# See LICENSE file for licensing details.
+
 """Module with the core interfaces for the Kafka app workload."""
 
 from abc import ABC

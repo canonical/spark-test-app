@@ -1,4 +1,7 @@
 #!/bin/bash
+#
+# Copyright 2024 Canonical Ltd.
+# See LICENSE file for licensing details.
 
 echo "Username: ${SPARK_USER}"
 echo "Namespace: ${SPARK_NAMESPACE}"

@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-# Copyright 2024 Canonical Limited
+#
+# Copyright 2024 Canonical Ltd.
 # See LICENSE file for licensing details.
 
 """Metastore database related event handlers."""

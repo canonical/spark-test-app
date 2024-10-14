@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-
+#
 # Copyright 2024 Canonical Limited
 # See LICENSE file for licensing details.
 
@@ -158,7 +158,7 @@ class AuthDataBag(BaseModel):
 
 
 class KafkaProviderRelationDataBag(AuthDataBag):
-    """Class for the provider relation databag."""
+    """Class for the Kafka provider relation databag."""
 
     consumer_group_prefix: Optional[str]
 
@@ -174,7 +174,7 @@ class KafkaProviderRelationDataBag(AuthDataBag):
 
 
 class PostgreSQLProviderRelationDataBag(AuthDataBag):
-    """Class that handle the MongoDB relation databag."""
+    """Class that handle the PostgreSQL relation databag."""
 
     database: Optional[str]
     read_only_endpoints: Optional[str]
