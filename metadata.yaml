@@ -1,0 +1,49 @@
+# Copyright 2024 Canonical Ltd.
+# See LICENSE file for licensing details.
+
+name: spark-test-app
+display-name: Spark Test App
+description: |
+  Simple charm to simulate Spark clients applications.
+  
+  The spark-test-app allows to create an an simple app to be used in testing and demo. It now features two flavour
+
+    * `vanilla` that simply runs a count spark job to test functionality
+    * `kafka` that connects to Kafka and perform some streaming aggregation
+
+  The charm features the following integrations:
+
+    * Integration Hub (required) in order to create the spark service to be used to run the Spark Jobs
+    * Kafka (required only when running in Kafka flavour) to connect to Kafka
+    * PostgreSQL (required when persisting data into Hive Table)
+
+summary: Spark Test App
+source: https://github.com/canonical/spark-test-app
+issues: https://github.com/canonical/spark-test-app/issues
+website:
+  - https://ubuntu.com/data/spark
+  - https://canonical.com/data/docs/spark/k8s
+  - https://charmhub.io/spark-k8s-bundle
+  - https://github.com/canonical/spark-test-app
+  - https://matrix.to/#/%23charmhub-data-platform%3Aubuntu.com
+maintainers:
+  - Canonical Data Platform <data-platform@lists.launchpad.net>
+
+containers:
+  spark:
+    resource: spark-image
+
+resources:
+  spark-image:
+    type: oci-image
+    description: OCI image for spark
+    upstream-source: ghcr.io/canonical/charmed-spark-kyuubi@sha256:1395fbcb34fee2ad1c939adc0e27d5b12fc10d67457f980df548612f735b860b # 3.4.2
+
+requires:
+  kafka:
+    interface: kafka_client
+  metastore:
+    interface: postgresql_client
+  spark-service-account:
+    interface: spark_service_account
+    limit: 1
