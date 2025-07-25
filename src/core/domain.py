@@ -5,6 +5,7 @@
 
 """Definition of various model classes."""
 
+import json
 from enum import Enum
 from typing import List, MutableMapping, Optional
 
@@ -62,17 +63,18 @@ class SparkServiceAccountInfo(RelationState):
 
     def __bool__(self):
         """Return flag of whether the class is ready to be used."""
-        return super().__bool__() and "service-account" in self.relation_data.keys()
+        return super().__bool__() and bool(self.relation_data.get("service-account", ""))
 
     @property
-    def service_account(self):
+    def service_account(self) -> str:
         """Service account used for Spark."""
         return self.relation_data["service-account"]
 
     @property
-    def namespace(self):
-        """Namespace used for running Spark jobs."""
-        return self.relation_data["namespace"]
+    def spark_properties(self) -> dict[str, str]:
+        """Spark properties tied up with the service account."""
+        props = dict(json.loads(self.relation_data.get("spark-properties", "{}")))
+        return dict(sorted(props.items()))
 
 
 class BaseEnumStr(str, Enum):

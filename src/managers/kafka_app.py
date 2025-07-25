@@ -53,8 +53,8 @@ class KafkaApp:
         """Return the list of extra packages to be used for running the Spark job."""
         return (
             [
-                "org.apache.spark:spark-streaming-kafka-0-10_2.12:3.4.2",
-                "org.apache.spark:spark-sql-kafka-0-10_2.12:3.4.2",
+                "org.apache.spark:spark-streaming-kafka-0-10_2.12:3.4.4",
+                "org.apache.spark:spark-sql-kafka-0-10_2.12:3.4.4",
             ]
             if self.context.config.flavour == Flavour.KAFKA.value
             else []

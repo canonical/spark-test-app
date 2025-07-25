@@ -9,7 +9,7 @@ from charms.data_platform_libs.v0.data_interfaces import DatabaseRequirerData, K
 from ops import Model, Relation
 
 from common.logging import WithLogging
-from common.relation.spark_sa import RequirerData
+from charms.spark_integration_hub_k8s.v0.spark_service_account import SparkServiceAccountRequirerData
 from constants import (
     KAFKA_RELATION_NAME,
     POSTGRESQL_METASTORE,
@@ -40,6 +40,14 @@ class Context(WithLogging):
             consumer_group_prefix="streaming-app",
         )
 
+        namespace = self.config.namespace if self.config.namespace else self.model.name
+        service_account = self.config.service_account
+        self.spark_service_account_interface = SparkServiceAccountRequirerData(
+            self.model,
+            relation_name=SPARK_SERVICE_ACCOUNT,
+            service_account=f"{namespace}:{service_account}",
+        )
+
     @property
     def _spark_account_relation(self) -> Relation | None:
         """The integration hub relation."""
@@ -68,9 +76,9 @@ class Context(WithLogging):
     @property
     def service_account(self) -> SparkServiceAccountInfo | None:
         """The state of service account information."""
-        data_interface = RequirerData(self.model, SPARK_SERVICE_ACCOUNT)
-
-        if account := SparkServiceAccountInfo(
-            self._spark_account_relation, data_interface, self.model.app
-        ):
-            return account
+        if not self._spark_account_relation:
+            return None
+        return SparkServiceAccountInfo(
+            self._spark_account_relation,
+            self.spark_service_account_interface, self.model.app
+        )

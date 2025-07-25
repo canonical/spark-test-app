@@ -8,12 +8,12 @@
 from ops import CharmBase
 
 from common.logging import WithLogging
-from common.relation.spark_sa import (
-    IntegrationHubRequirer,
+from charms.spark_integration_hub_k8s.v0.spark_service_account import (
     ServiceAccountGoneEvent,
     ServiceAccountGrantedEvent,
+    SparkServiceAccountRequirerEventHandlers
 )
-from constants import SPARK_SERVICE_ACCOUNT
+
 from core.context import Context
 from core.workload import KafkaAppWorkloadBase
 from events.base import BaseEventHandler, compute_status, defer_when_not_ready
@@ -29,11 +29,8 @@ class SparkIntegrationHubEvents(BaseEventHandler, WithLogging):
         self.context = context
         self.workload = workload
 
-        self.requirer = IntegrationHubRequirer(
-            self.charm,
-            SPARK_SERVICE_ACCOUNT,
-            self.context.config.service_account,
-            self.context.config.namespace,
+        self.requirer = SparkServiceAccountRequirerEventHandlers(
+            self.charm, self.context.spark_service_account_interface
         )
 
         self.framework.observe(self.requirer.on.account_granted, self._on_account_granted)
@@ -44,10 +41,13 @@ class SparkIntegrationHubEvents(BaseEventHandler, WithLogging):
     def _on_account_granted(self, event: ServiceAccountGrantedEvent):
         """Handle the `ServiceAccountGrantedEvent` event from integration hub."""
         self.logger.info("Service account received")
+
+        namespace, username = event.service_account.split(":")
+
         self.workload.set_environment(
             {
-                "SPARK_USER": event.service_account,
-                "SPARK_NAMESPACE": event.namespace,
+                "SPARK_USER": username,
+                "SPARK_NAMESPACE": namespace,
             }
         )
 
