@@ -13,7 +13,7 @@ from common.logging import WithLogging
 from core.context import Context
 from core.domain import Flavour
 from core.workload import KafkaAppWorkloadBase
-from events.base import BaseEventHandler, compute_status
+from events.base import BaseEventHandler, compute_status, defer_when_not_ready
 from managers.kafka_app import KafkaApp
 
 
@@ -60,7 +60,6 @@ class SparkAppEvents(BaseEventHandler, WithLogging):
     @compute_status
     def _on_spark_pebble_ready(self, event: PebbleReadyEvent) -> None:
         """Handle the Pebble ready event."""
-
         for flavour in Flavour:
             source = f"{flavour}.py"
             self.copy_to_workload(source)
@@ -85,6 +84,7 @@ class SparkAppEvents(BaseEventHandler, WithLogging):
         self.workload.stop()
 
     @compute_status
+    @defer_when_not_ready
     def _on_config_changed(self, _) -> None:
         """Handle the on configuration changed hook."""
         self.logger.info("Resetting configs")
