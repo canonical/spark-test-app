@@ -33,11 +33,11 @@ license = "Apache-2.0"
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = ">=3.8"
+python = ">=3.10,<4.0.0"
 ops = ">=2.4.1"
 pydantic ="^1.10.7"
 lightkube = "^0.15.2"
-spark8t = { git = "https://github.com/canonical/spark-k8s-toolkit-py.git", tag="v0.0.7", python=">3.8,<4.0"}
+spark8t = "^1.0.0"
 
 [tool.poetry.group.fmt]
 optional = true
