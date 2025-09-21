@@ -5,15 +5,14 @@
 
 """Integration Hub related event handlers."""
 
-from ops import CharmBase
-
-from common.logging import WithLogging
 from charms.spark_integration_hub_k8s.v0.spark_service_account import (
     ServiceAccountGoneEvent,
     ServiceAccountGrantedEvent,
-    SparkServiceAccountRequirerEventHandlers
+    SparkServiceAccountRequirerEventHandlers,
 )
+from ops import CharmBase
 
+from common.logging import WithLogging
 from core.context import Context
 from core.workload import KafkaAppWorkloadBase
 from events.base import BaseEventHandler, compute_status, defer_when_not_ready

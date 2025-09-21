@@ -31,9 +31,7 @@ class MetastoreEvents(BaseEventHandler, WithLogging):
 
         self.framework.observe(self.database_provider.on.database_created, self._on_db_created)
         self.framework.observe(self.database_provider.on.endpoints_changed, self._on_db_created)
-        self.framework.observe(
-            self.database_provider.on.metastore_relation_broken, self._on_relation_removed
-        )
+        self.framework.observe(self.charm.on.metastore_relation_broken, self._on_relation_removed)
 
     @compute_status
     @defer_when_not_ready

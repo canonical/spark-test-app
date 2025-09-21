@@ -24,7 +24,7 @@ class KafkaAppPaths:
         return self.conf_path / "hive-site.xml"
 
     @property
-    def env_file(self):
+    def env_file(self) -> Path:
         """Return the path of the files where environment vars are stored."""
         return self.conf_path / "environment"
 
