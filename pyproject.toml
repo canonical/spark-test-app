@@ -65,7 +65,7 @@ codespell = ">=2.2.2"
 optional = true
 
 [tool.poetry.group.unit.dependencies]
-pytest = "<8.4.2"
+pytest = ">=7.2"
 coverage = {extras = ["toml"], version = ">7.0"}
 ops = { extras = ["testing"], version = ">3.1.0" }
 
