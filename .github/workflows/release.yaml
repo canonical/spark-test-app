@@ -11,18 +11,8 @@ on:
 
 jobs:
 
-  tag:
-    name: Create charm refresh compatibility version git tag
-    uses: canonical/data-platform-workflows/.github/workflows/tag_charm_edge.yaml@v32.0.0
-    with:
-      track: latest
-    permissions:
-      contents: write # Needed to create git tag
-
   ci-tests:
     uses: ./.github/workflows/ci.yaml
-    needs:
-      - tag
     secrets: inherit
 
   release:
@@ -31,7 +21,7 @@ jobs:
       - ci-tests
     uses: canonical/data-platform-workflows/.github/workflows/release_charm_edge.yaml@v32.0.0
     with:
-      track: ${{needs.tag.outputs.track}}
+      track: latest
       artifact-prefix: ${{ needs.ci-tests.outputs.artifact-prefix }}
     secrets:
       charmhub-token: ${{ secrets.CHARMHUB_TOKEN }}
