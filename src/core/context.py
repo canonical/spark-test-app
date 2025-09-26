@@ -6,10 +6,12 @@
 """Charm Context definition and parsing logic."""
 
 from charms.data_platform_libs.v0.data_interfaces import DatabaseRequirerData, KafkaRequirerData
+from charms.spark_integration_hub_k8s.v0.spark_service_account import (
+    SparkServiceAccountRequirerData,
+)
 from ops import Model, Relation
 
 from common.logging import WithLogging
-from charms.spark_integration_hub_k8s.v0.spark_service_account import SparkServiceAccountRequirerData
 from constants import (
     KAFKA_RELATION_NAME,
     POSTGRESQL_METASTORE,
@@ -79,6 +81,5 @@ class Context(WithLogging):
         if not self._spark_account_relation:
             return None
         return SparkServiceAccountInfo(
-            self._spark_account_relation,
-            self.spark_service_account_interface, self.model.app
+            self._spark_account_relation, self.spark_service_account_interface, self.model.app
         )

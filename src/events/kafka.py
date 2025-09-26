@@ -31,7 +31,7 @@ class KafkaEvents(BaseEventHandler, WithLogging):
             self.kafka_provider.on.bootstrap_server_changed, self._on_topic_created
         )
         self.framework.observe(
-            self.kafka_provider.on.kafka_relation_broken, self._on_kafka_relation_removed
+            self.charm.on.kafka_relation_broken, self._on_kafka_relation_removed
         )
 
     @compute_status

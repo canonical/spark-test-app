@@ -43,6 +43,7 @@ class SparkAppEvents(BaseEventHandler, WithLogging):
 
         self.framework.observe(self.charm.on.config_changed, self._on_config_changed)
         self.framework.observe(self.charm.on.update_status, self._on_update_status)
+        self.framework.observe(self.charm.on.install, self._on_update_status)
 
     def copy_to_workload(self, source: Path | str):
         """Copy a file from the charm resources to the workload kafka application directory."""

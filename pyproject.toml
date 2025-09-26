@@ -31,6 +31,7 @@ authors = [
 ]
 license = "Apache-2.0"
 readme = "README.md"
+package-mode = false
 
 [tool.poetry.dependencies]
 python = ">=3.10,<4.0.0"
@@ -39,10 +40,16 @@ pydantic ="^1.10.7"
 lightkube = "^0.15.2"
 spark8t = "^1.0.0"
 
-[tool.poetry.group.fmt]
+[tool.poetry.group.charm-libs.dependencies]
+ops = ">=2.13.0"
+poetry-core = "*"
+# grafana_agent/v0/cos_agent.py requires pydantic <2
+pydantic = "^1.10.17, <2"
+
+[tool.poetry.group.format]
 optional = true
 
-[tool.poetry.group.fmt.dependencies]
+[tool.poetry.group.format.dependencies]
 black = "^22.3.0"
 ruff = ">=0.0.157"
 
@@ -60,6 +67,7 @@ optional = true
 [tool.poetry.group.unit.dependencies]
 pytest = ">=7.2"
 coverage = {extras = ["toml"], version = ">7.0"}
+ops = { extras = ["testing"], version = ">3.1.0" }
 
 [tool.poetry.group.integration]
 optional = true

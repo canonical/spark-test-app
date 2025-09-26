@@ -11,7 +11,8 @@ from lightkube import Client
 from lightkube.core.exceptions import ApiError
 from lightkube.resources.core_v1 import Namespace, ServiceAccount
 from spark8t.domain import PropertyFile
-from spark8t.services import K8sServiceAccountRegistry, LightKube
+from spark8t.kube_interface.lightkube import LightKubeInterface as LightKube
+from spark8t.registry.k8s import K8sServiceAccountRegistry
 from spark8t.utils import umask_named_temporary_file
 
 from common.logging import WithLogging
