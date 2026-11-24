@@ -74,13 +74,9 @@ optional = true
 
 [tool.poetry.group.integration.dependencies]
 pytest = ">=7.2"
-juju = "^2.9.44"
 coverage = {extras = ["toml"], version = ">7.0"}
-pytest-operator = ">0.20"
-kazoo = ">=2.8"
+jubilant = "^1.14.0"
 tenacity = ">=7.0"
-pure-sasl = ">=0.5"
-requests = ">2.25"
 
 [tool.ruff]
 line-length = 99
