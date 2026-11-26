@@ -11,14 +11,8 @@ from tenacity import Retrying, retry_if_exception_type, stop_after_delay, wait_f
 
 APP = "spark-test-app"
 HUB = "spark-integration-hub-k8s"
-WORKLOAD_IMAGE = (
-    "ghcr.io/canonical/charmed-spark-kyuubi"
-    "@sha256:533273d788cb9726586b5cf5297ee670b018e40e137bcf8f34f661b6fe74544a"
-)
-JOB_IMAGE = (
-    "ghcr.io/canonical/charmed-spark"
-    "@sha256:0505173879d2ed4ab103d860364aa759f13d7a29de33c89de02d47d431c54125"
-)
+WORKLOAD_IMAGE = "ghcr.io/canonical/charmed-spark-kyuubi:4.0-22.04_stable"
+JOB_IMAGE = "ghcr.io/canonical/charmed-spark:4.0-22.04_stable"
 
 
 def test_spark4_dummy_job(juju: jubilant.Juju, packed_charm: Path) -> None:

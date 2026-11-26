@@ -30,9 +30,7 @@ def packed_charm(architecture: str) -> Path:
     pattern = f"spark-test-app_*-{architecture}.charm"
     charms = sorted(Path.cwd().glob(pattern))
     if len(charms) != 1:
-        pytest.fail(
-            f"Expected one {pattern} artifact; found {len(charms)}. Run tox -e build-charms."
-        )
+        pytest.fail(f"Expected one {pattern} artifact; found {len(charms)}. Run charmcraft pack.")
     return charms[0]
 
 
@@ -48,5 +46,5 @@ def juju(
 
     with jubilant.temp_model(keep=pytestconfig.getoption("--keep-models")) as model:
         model.wait_timeout = 600
-        model.cli("set-model-constraints", f"arch={architecture}")
+        model.model_constraints({"arch": architecture})
         yield model

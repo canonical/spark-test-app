@@ -49,7 +49,7 @@ From the repository root, with Charmcraft and tox installed and the current
 Juju controller bootstrapped on Kubernetes, run:
 
 ```bash
-tox run -e build-charms
+charmcraft pack
 tox run -e integration
 ```
 
